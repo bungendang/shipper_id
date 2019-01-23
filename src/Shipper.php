@@ -344,7 +344,9 @@ class Shipper
                 if ($status == 'success') {
                     return $data['rows'];
                 } else {
-                    $this->errors[ $status[ 'code' ] ] = $status[ 'description' ];
+                    // var_dump($body);
+                    return $data;
+                    $this->errors[ $status ] = $data[ 'content' ];
                 }
             }
         }
@@ -358,260 +360,24 @@ class Shipper
         // return "list countries";
     }
 
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getCouriersList
-     *
-     * Get list of supported couriers.
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getCouriersList()
-    {
-        return $this->couriersList;
+    public function getMerchant(){
+        // echo "list";
+        return $this->request('merchants');
+        // return "list countries";
     }
 
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getProvinces
-     *
-     * Get list of provinces.
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getProvinces()
-    {
-        return $this->request('province');
+    public function getProvinces(){
+        // echo "list";
+        return $this->request('provinces');
+        // return "list countries";
     }
 
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getProvince
-     *
-     * Get detail of single province.
-     *
-     * @param   int $idProvince Province ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getProvince($idProvince)
-    {
-        return $this->request('province', ['id' => $idProvince]);
+    public function getCities($province_id){
+        // echo "list";
+        return $this->request('cities?provinces='.$province_id);
+        // return "list countries";
     }
 
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getCities
-     *
-     * Get list of province cities.
-     *
-     * @param   int $idProvince Province ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getCities($idProvince = null)
-    {
-        $params = [];
-
-        if ( ! is_null($idProvince)) {
-            $params[ 'province' ] = $idProvince;
-        }
-
-        return $this->request('city', $params);
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getCity
-     *
-     * Get detail of single city.
-     *
-     * @param   int $idCity City ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getCity($idCity)
-    {
-        return $this->request('city', ['id' => $idCity]);
-    }
-
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getSubdistricts
-     *
-     * Get list of city subdisctricts.
-     *
-     * @param   int $idCity City ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getSubdistricts($idCity)
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 302 ] = 'Unsupported Subdistricts Request. Tipe akun starter tidak mendukung hingga tingkat kecamatan.';
-
-            return false;
-        } elseif ($this->accountType === 'basic') {
-            $this->errors[ 302 ] = 'Unsupported Subdistricts Request. Tipe akun basic tidak mendukung hingga tingkat kecamatan.';
-
-            return false;
-        }
-
-        return $this->request('subdistrict', ['city' => $idCity]);
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getSubdistrict
-     *
-     * Get detail of single subdistrict.
-     *
-     * @param   int $idSubdistrict Subdistrict ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getSubdistrict($idSubdistrict)
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 302 ] = 'Unsupported Subdistricts Request. Tipe akun starter tidak mendukung hingga tingkat kecamatan.';
-
-            return false;
-        } elseif ($this->accountType === 'basic') {
-            $this->errors[ 302 ] = 'Unsupported Subdistricts Request. Tipe akun basic tidak mendukung hingga tingkat kecamatan.';
-
-            return false;
-        }
-
-        return $this->request('subdistrict', ['id' => $idSubdistrict]);
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getInternationalOrigins
-     *
-     * Get list of supported international origins.
-     *
-     * @param   int $idProvince Province ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getInternationalOrigins($idProvince = null)
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 301 ] = 'Unsupported International Origin Request. Tipe akun starter tidak mendukung tingkat international.';
-
-            return false;
-        }
-
-        $params = [];
-
-        if (isset($idProvince)) {
-            $params[ 'province' ] = $idProvince;
-        }
-
-        return $this->request('v2/internationalOrigin', $params);
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getInternationalOrigin
-     *
-     * Get list of supported international origins by city and province.
-     *
-     * @param   int $idCity     City ID
-     * @param   int $idProvince Province ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getInternationalOrigin($idCity = null, $idProvince = null)
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 301 ] = 'Unsupported International Origin Request. Tipe akun starter tidak mendukung tingkat international.';
-
-            return false;
-        }
-
-        if (isset($idCity)) {
-            $params[ 'id' ] = $idCity;
-        }
-
-        if (isset($idProvince)) {
-            $params[ 'province' ] = $idProvince;
-        }
-
-        return $this->request('v2/internationalOrigin', $params);
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getInternationalDestinations
-     *
-     * Get list of international destinations.
-     *
-     * @param   int $id_country Country ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getInternationalDestinations()
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 301 ] = 'Unsupported International Destination Request. Tipe akun starter tidak mendukung tingkat international.';
-
-            return false;
-        }
-
-        return $this->request('v2/internationalDestination');
-    }
-
-    // ------------------------------------------------------------------------
-
-    /**
-     * Rajaongkir::getInternationalDestination
-     *
-     * Get International Destination
-     *
-     * @param   int $idCountry Country ID
-     *
-     * @access  public
-     * @return  array|bool Returns FALSE if failed.
-     */
-    public function getInternationalDestination($idCountry = null)
-    {
-        if ($this->accountType === 'starter') {
-            $this->errors[ 301 ] = 'Unsupported International Destination Request. Tipe akun starter tidak mendukung tingkat international.';
-
-            return false;
-        }
-
-        $params = [];
-
-        if (isset($idCountry)) {
-            $params[ 'id' ] = $idCountry;
-        }
-
-        return $this->request('v2/internationalDestination', $params);
-    }
 
     // ------------------------------------------------------------------------
 

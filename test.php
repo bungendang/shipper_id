@@ -9,6 +9,6 @@ use Bungendang\Shipper;
 $config['api_key'] = "9f97034bf732bbe8bcb9f23d12c581e1";
 $shipper = new Shipper($config);
 
-$countries = $shipper->getCountries();
+$countries = $shipper->getMerchant();
 
 var_dump($countries);
