@@ -369,6 +369,17 @@ class Shipper
         // return "list countries";
     }
 
+    public function getSuburbs($city_id){
+        // echo "list";
+        return $this->request('suburbs',['city'=>$city_id]);
+        // return "list countries";
+    }
+
+    public function getAreas($suburbs_id){
+        // echo "list";
+        return $this->request('areas',['suburbs'=>$suburbs_id]);
+        // return "list countries";
+    }
 
     // ------------------------------------------------------------------------
 
