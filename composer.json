@@ -1,7 +1,7 @@
 {
     "name": "bungendang/shipper",
     "description": "Shipper module",
-    "license": "GNU General Public License v3.0 License",
+    "license": "GNU General Public License v3.0 only",
 	"type": "php-class",
 	"keywords": [
 		"shipper",
