@@ -17,13 +17,15 @@
 		"email": "halo@bungendang.com",
 		"issues": "https://github.com/bungendang/shipper_id/issues"
 	},
+	"minimum-stability": "stable",
+	"prefer-stable":true,
     "require": {
         "php": ">=5.6.0",
 	    "o2system/curl": "*"
 	},
 	"autoload": {
 		"files": [
-		  "src/Rajaongkir.php"
+		  "src/Shipper.php"
 		]
 	}
 }
