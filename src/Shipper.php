@@ -365,7 +365,7 @@ class Shipper
 
     public function getCities($province_id){
         // echo "list";
-        return $this->request('cities',['province'=>'5']);
+        return $this->request('cities',['province'=>$province_id]);
         // return "list countries";
     }
 
