@@ -377,7 +377,8 @@ class Shipper
 
     public function getAreas($suburbs_id){
         // echo "list";
-        return $this->request('areas',['suburbs'=>$suburbs_id]);
+        var_dump($suburbs_id);
+        return $this->request('areas',['suburb'=>$suburbs_id]);
         // return "list countries";
     }
 
