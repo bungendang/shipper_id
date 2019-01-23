@@ -273,6 +273,9 @@ class Shipper
         return $this;
     }
 
+
+
+
     // ------------------------------------------------------------------------
 
     /**
@@ -302,8 +305,8 @@ class Shipper
                 break;
 
             case 'pro':
-                $apiUrl = 'https://pro.rajaongkir.com';
-                $path = 'api/' . $path;
+                $apiUrl = 'https://sandbox-api.shipper.id/';
+                $path = 'public/v1/' . $path;
                 break;
         }
 
@@ -354,6 +357,10 @@ class Shipper
         }
 
         return false;
+    }
+
+    public function getCountries(){
+        
     }
 
     // ------------------------------------------------------------------------
@@ -442,6 +449,7 @@ class Shipper
     {
         return $this->request('city', ['id' => $idCity]);
     }
+
 
     // ------------------------------------------------------------------------
 
