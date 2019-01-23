@@ -297,7 +297,7 @@ class Shipper
         switch ($this->accountType) {
             default:
             case 'starter':
-                $path = 'public/v1/' . $path . '?apiKey='.$this->apiKey;
+                $path = 'public/v1/' . $path;
                 break;
 
             case 'basic':
@@ -310,48 +310,39 @@ class Shipper
                 break;
         }
 
-        $uri = (new Uri($apiUrl))->withPath($path);
-        $request = new Curl\Request();
-        $request->setHeaders([
-            'User-Agent' => 'Shipper/',
-        ]);
-
-        switch ($type) {
-            default:
-            case 'GET':
-                $this->response = $request->setUri($uri)->get($params);
-                break;
-
-            case 'POST':
-                $request->addHeader('content-type', 'application/x-www-form-urlencoded');
-                $this->response = $request->setUri($uri)->post($params);
-                break;
-        }
-
-        // Try to get curl error
-        if (false !== ($error = $this->response->getError())) {
-            $this->addErrors($error->getArrayCopy());
+        $uri = $apiUrl.$path;
+        $params['apiKey'] = $this->apiKey;
+        $param_string = http_build_query($params);
+        // var_dump($param_string);
+        if ($params) {
+            # code...
+            $uri = $uri."?".$param_string;
         } else {
-            $body = $this->response->getBody();
-            // var_dump($body);
-            if ($body instanceof \DOMDocument) {
-                $this->errors[ 404 ] = 'Page Not Found!';
-            } else {
-                $body = $body;
-                $status = $body[ 'status' ];
-                $data = $body['data'];
-                // return $body;
-                if ($status == 'success') {
-                    return $data['rows'];
-                } else {
-                    // var_dump($body);
-                    return $data;
-                    $this->errors[ $status ] = $data[ 'content' ];
-                }
-            }
+            # code...
         }
+        
 
-        return false;
+        // $uri = $uri ."&apiKey=".$this->apiKey;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = [
+            'User-Agent: Shipper/'
+        ];
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        curl_exec ($ch);
+        if( ! $result = curl_exec($ch))
+        {
+            trigger_error(curl_error($ch));
+        } 
+        curl_close ($ch);
+
+        $result = json_decode($result, true);
+
+        return $result["data"]["rows"];
     }
 
     public function getCountries(){
@@ -374,7 +365,7 @@ class Shipper
 
     public function getCities($province_id){
         // echo "list";
-        return $this->request('cities?provinces='.$province_id);
+        return $this->request('cities',['province'=>'5']);
         // return "list countries";
     }
 
