@@ -39,7 +39,7 @@ use O2System\Spl\Traits\Collectors\ErrorCollectorTrait;
  */
 class Shipper
 {
-    use ErrorCollectorTrait;
+    // use ErrorCollectorTrait;
 
     /**
      * Constant Account Type
@@ -292,12 +292,12 @@ class Shipper
      */
     protected function request($path, $params = [], $type = 'GET')
     {
-        $apiUrl = 'https://api.rajaongkir.com';
+        $apiUrl = 'https://sandbox-api.shipper.id/';
 
         switch ($this->accountType) {
             default:
             case 'starter':
-                $path = 'starter/' . $path;
+                $path = 'public/v1/' . $path . '?apiKey='.$this->apiKey;
                 break;
 
             case 'basic':
@@ -313,7 +313,7 @@ class Shipper
         $uri = (new Uri($apiUrl))->withPath($path);
         $request = new Curl\Request();
         $request->setHeaders([
-            'key' => $this->apiKey,
+            'User-Agent' => 'Shipper/',
         ]);
 
         switch ($type) {
@@ -333,23 +333,16 @@ class Shipper
             $this->addErrors($error->getArrayCopy());
         } else {
             $body = $this->response->getBody();
-
+            // var_dump($body);
             if ($body instanceof \DOMDocument) {
                 $this->errors[ 404 ] = 'Page Not Found!';
             } else {
-                $body = $body->rajaongkir;
+                $body = $body;
                 $status = $body[ 'status' ];
-
-                if ($status[ 'code' ] == 200) {
-                    if (isset($body[ 'results' ])) {
-                        if (count($body[ 'results' ]) == 1 && isset($body[ 'results' ][ 0 ])) {
-                            return $body[ 'results' ][ 0 ];
-                        } elseif (count($body[ 'results' ])) {
-                            return $body[ 'results' ];
-                        }
-                    } elseif (isset($body[ 'result' ])) {
-                        return $body[ 'result' ];
-                    }
+                $data = $body['data'];
+                // return $body;
+                if ($status == 'success') {
+                    return $data['rows'];
                 } else {
                     $this->errors[ $status[ 'code' ] ] = $status[ 'description' ];
                 }
@@ -360,7 +353,9 @@ class Shipper
     }
 
     public function getCountries(){
-        
+        // echo "list";
+        return $this->request('countries');
+        // return "list countries";
     }
 
     // ------------------------------------------------------------------------
