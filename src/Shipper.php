@@ -60,6 +60,7 @@ class Shipper
      * @type    string
      */
     protected $accountType = 'starter';
+    protected $path = 'countries';
 
     /**
      * Rajaongkir::$apiKey
@@ -292,6 +293,8 @@ class Shipper
      */
     protected function request($path, $params = [], $type = 'GET')
     {
+        var_dump($path);
+        $this->path = $path;
         $apiUrl = 'https://sandbox-api.shipper.id/';
 
         switch ($this->accountType) {
@@ -341,8 +344,19 @@ class Shipper
         curl_close ($ch);
 
         $result = json_decode($result, true);
+        echo $path;
+        switch ($this->path) {
+            case "countries":
+                return $result["data"]["rows"];
+                break;
 
-        return $result["data"]["rows"];
+            case "domesticRates":
+                return $result["data"]["rates"];
+                break;
+            default:
+                return $result["data"]["rows"];
+        }
+        // return $result["data"]["rows"];
     }
 
     public function getCountries(){
@@ -379,6 +393,13 @@ class Shipper
         // echo "list";
         var_dump($suburbs_id);
         return $this->request('areas',['suburb'=>$suburbs_id]);
+        // return "list countries";
+    }
+
+    public function getCourier($data){
+        // echo "list";
+        var_dump($data);
+        return $this->request('domesticRates',$data);
         // return "list countries";
     }
 
