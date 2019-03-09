@@ -293,7 +293,7 @@ class Shipper
      */
     protected function request($path, $params = [], $type = 'GET')
     {
-        var_dump($path);
+        // var_dump($path);
         $this->path = $path;
         $apiUrl = 'https://sandbox-api.shipper.id/';
 
@@ -344,7 +344,7 @@ class Shipper
         curl_close ($ch);
 
         $result = json_decode($result, true);
-        echo $path;
+        // echo $path;
         switch ($this->path) {
             case "countries":
                 return $result["data"]["rows"];
@@ -381,6 +381,10 @@ class Shipper
         // echo "list";
         return $this->request('cities',['province'=>$province_id]);
         // return "list countries";
+    }
+
+    public function getCitiesAll(){
+        return $this->request('cities',['origin'=>'all']);
     }
 
     public function getSuburbs($city_id){

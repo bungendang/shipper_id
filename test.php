@@ -22,4 +22,10 @@ $data = [
 
 $countries = $shipper->getCourier($data);
 
-var_dump($countries);
+
+
+// var_dump($countries);
+
+$allcities = $shipper->getCitiesAll();
+
+var_dump($allcities);
